@@ -3,6 +3,10 @@ import hashlib
 import os
 import time
 import mimetypes
+import random
+import signal
+
+packet_loss_prob = 0.2
 
 server_host = socket.gethostname()
 server_port = 9998
@@ -48,6 +52,10 @@ def rdt_recv():
 
         if str(expected_seq_num) == str(recv_seq_num):
             if str(checksum(recv_data)) == str(recv_checksum):
+                r = random.random()
+                if r <= packet_loss_prob:
+                    print "Packet Loss: ", recv_seq_num
+                    continue
                 f.write(recv_data)
                 expected_seq_num = send_ack(expected_seq_num)
                 len_data = len_data - 1

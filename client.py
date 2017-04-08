@@ -3,6 +3,8 @@ import hashlib
 import os
 import time
 import mimetypes
+import random
+import signal
 
 client_host = socket.gethostname()
 client_port = 9999
@@ -19,6 +21,12 @@ mss = 102
 header_len = 8
 TIMEOUT = 1
 
+class AlarmException(Exception):
+    pass
+
+def alarmHandler(signum, frame):
+    raise AlarmException
+
 def checksum(m):
     l = len(m)
     if l%2 != 0:
@@ -30,7 +38,12 @@ def checksum(m):
     return str(~csum & 0xffff)
 
 def recv_ack(expected_seq_num):
-    data, taddr = clientsocket.recvfrom(1024)
+    signal.signal(signal.SIGALRM, alarmHandler)
+    signal.alarm(TIMEOUT)
+    try:
+        data, taddr = clientsocket.recvfrom(1024)
+    except AlarmException:
+        return 0
     '''
     print taddr[0],server_host
     if taddr[0] != server_host:
@@ -75,7 +88,7 @@ def rdt_send(file_data):
     while last_unacked < len(pkts):
         #print unacked, window_size
         if unacked < window_size and (unacked + last_unacked) < len(pkts):
-            print unacked + last_unacked
+            #print unacked + last_unacked
             clientsocket.sendto(pkts[unacked + last_unacked],(server_host,server_port))
             unacked += 1
             continue
@@ -93,6 +106,7 @@ def rdt_send(file_data):
                 continue
             '''
             #pkt_recv, addr = clientsocket.recvfrom(1024)
+            print (time.time() - start_time), TIMEOUT
             if (time.time() - start_time >= TIMEOUT):
                 print "TIMEOUT"
                 unacked = 0
