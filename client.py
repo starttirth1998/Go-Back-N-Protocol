@@ -6,6 +6,8 @@ import mimetypes
 import random
 import signal
 
+print "Press ENTER after starting server",
+temp = raw_input()
 client_host = socket.gethostname()
 client_port = 9999
 server_host = socket.gethostname()
@@ -15,11 +17,13 @@ clientsocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 clientsocket.bind((client_host,client_port))
 
 base = 1
-window_size = 3
+print "Window Size:",
+window_size = input()
 window = []
 mss = 102
 header_len = 8
-TIMEOUT = 1
+print "Timeout:",
+TIMEOUT = input()
 
 class AlarmException(Exception):
     pass
@@ -114,7 +118,8 @@ def rdt_send(file_data):
                 continue
     print "File Succesfully transfered"
 
-filename = "s.py"
+print "Filename:",
+filename = raw_input()
 try:
     f = open(filename,'rb')
     data = f.read()
