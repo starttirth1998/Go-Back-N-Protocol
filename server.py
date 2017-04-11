@@ -10,9 +10,9 @@ import sys
 packet_loss_prob = 0.2
 
 server_host = socket.gethostname()
-#server_host = socket.gethostbyname('10.42.0.1')
+#server_host = socket.gethostbyname('10.1.38.45')
 server_port = 9998
-#client_host = socket.gethostbyname('10.1.38.45')
+#client_host = socket.gethostbyname('10.42.0.1')
 client_host = socket.gethostname()
 client_port = 9999
 
@@ -52,7 +52,7 @@ def rdt_recv():
         recv_data = info[2]
         #print recv_data
 
-        print recv_seq_num,":::",expected_seq_num
+        #print recv_seq_num,":::",expected_seq_num
         #print str(checksum(recv_data)),"+++",str(recv_checksum)
 
         if str(expected_seq_num) == str(recv_seq_num):

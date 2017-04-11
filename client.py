@@ -8,10 +8,10 @@ import signal
 import sys
 
 client_host = socket.gethostname()
-#client_host = socket.gethostbyname('10.42.0.151')
+#client_host = socket.gethostbyname('10.1.38.45')
 client_port = 9999
 server_host = socket.gethostname()
-#server_host = socket.gethostbyname('10.42.0.193')
+#server_host = socket.gethostbyname('10.42.0.65')
 #server_host = gethostbyname"localhost"
 server_port = 9998
 
