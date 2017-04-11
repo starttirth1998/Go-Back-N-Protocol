@@ -5,22 +5,27 @@ import time
 import mimetypes
 import random
 import signal
+import sys
 
-print "Press ENTER after starting server",
-temp = raw_input()
 client_host = socket.gethostname()
+#client_host = socket.gethostbyname('10.42.0.151')
 client_port = 9999
 server_host = socket.gethostname()
+#server_host = socket.gethostbyname('10.42.0.193')
+#server_host = gethostbyname"localhost"
 server_port = 9998
 
 clientsocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 clientsocket.bind((client_host,client_port))
 
+print "Press ENTER after starting server",
+temp = raw_input()
+
 base = 1
 print "Window Size:",
 window_size = input()
 window = []
-mss = 102
+mss = 512
 header_len = 8
 print "Timeout:",
 TIMEOUT = input()
@@ -71,7 +76,7 @@ def create_pkt(file_data):
     while to_send > 0:
         info = ""
         data = file_data[sent:sent+to_send]
-        info += str(seq_num) + ';' + checksum(file_data[sent:sent+to_send]) + ';' + str(data)
+        info += str(seq_num) + ';;eNdOfFiLe;;' + checksum(file_data[sent:sent+to_send]) + ';;eNdOfFiLe;;' + str(data)
         #print seq_num,info
         pkts.append(info)
         sent += to_send
@@ -92,7 +97,7 @@ def rdt_send(file_data):
     while last_unacked < len(pkts):
         #print unacked, window_size
         if unacked < window_size and (unacked + last_unacked) < len(pkts):
-            #print unacked + last_unacked
+            #print unacked + last_unacked,"\n",pkts[unacked + last_unacked]
             clientsocket.sendto(pkts[unacked + last_unacked],(server_host,server_port))
             unacked += 1
             continue

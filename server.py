@@ -5,11 +5,14 @@ import time
 import mimetypes
 import random
 import signal
+import sys
 
 packet_loss_prob = 0.2
 
 server_host = socket.gethostname()
+#server_host = socket.gethostbyname('10.42.0.1')
 server_port = 9998
+#client_host = socket.gethostbyname('10.1.38.45')
 client_host = socket.gethostname()
 client_port = 9999
 
@@ -27,7 +30,7 @@ def checksum(m):
     return str(~csum & 0xffff)
 
 def send_ack(expected_seq_num):
-    print expected_seq_num
+    #print expected_seq_num
     serversocket.sendto(str(expected_seq_num), (client_host, client_port))
     expected_seq_num+=1
     return expected_seq_num
@@ -43,12 +46,14 @@ def rdt_recv():
     len_data = int(len_data)
     while len_data > 0:
         file_data, addr = serversocket.recvfrom(1024)
-        info = file_data.split(';')
+        info = file_data.split(';;eNdOfFiLe;;')
         recv_seq_num = info[0]
         recv_checksum = info[1]
         recv_data = info[2]
+        #print recv_data
 
-        print recv_seq_num,":::",expected_seq_num, recv_data
+        print recv_seq_num,":::",expected_seq_num
+        #print str(checksum(recv_data)),"+++",str(recv_checksum)
 
         if str(expected_seq_num) == str(recv_seq_num):
             if str(checksum(recv_data)) == str(recv_checksum):
